@@ -20,7 +20,7 @@ jobs:
     strategy:
       matrix:
         configuration: [Release]
-        platform: [x64, x86, ARM64]
+        platform: [x64]
 
     runs-on: windows-latest
     
@@ -118,21 +118,21 @@ jobs:
           "MSIX_Bunde_FileName=$bundleName" >> $env:GITHUB_ENV
          
       # Decode the base 64 encoded pfx and save the Signing_Certificate
-      - name: Decode the pfx
-        id: decode-pfx
-        run: |
-          $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.TESTING_PFX_BASE64_ENCODED }}")
-          $certificatePath = "GitHubActionsWorkflow.pfx"
-          [IO.File]::WriteAllBytes($certificatePath, $pfx_cert_byte)
+      #- name: Decode the pfx
+      #  id: decode-pfx
+      #  run: |
+      #    $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.TESTING_PFX_BASE64_ENCODED }}")
+      #    $certificatePath = "GitHubActionsWorkflow.pfx"
+      #   [IO.File]::WriteAllBytes($certificatePath, $pfx_cert_byte)
           
-      - name: Sign the bundle
-        run: |
-          SignTool sign /fd SHA256 /a /f GitHubActionsWorkflow.pfx /p "${{ secrets.TESTING_PFX_PASSPHRASE }}" "${env:Bundle_Install_Path}\${{ env.MSIX_Bunde_FileName }}"
+      #- name: Sign the bundle
+      #  run: |
+      #    SignTool sign /fd SHA256 /a /f GitHubActionsWorkflow.pfx /p "${{ secrets.TESTING_PFX_PASSPHRASE }}" "${env:Bundle_Install_Path}\${{ env.MSIX_Bunde_FileName }}"
       
       # Remove the pfx
-      - name: Post Decode the pfx
-        if: ${{ steps.decode-pfx.outcome == 'success' || steps.decode-pfx.outcome == 'failure' }}
-        run: Remove-Item -path GitHubActionsWorkflow.pfx
+      #- name: Post Decode the pfx
+      #  if: ${{ steps.decode-pfx.outcome == 'success' || steps.decode-pfx.outcome == 'failure' }}
+      #  run: Remove-Item -path GitHubActionsWorkflow.pfx
           
       - name: Prepare for upload
         run: |
